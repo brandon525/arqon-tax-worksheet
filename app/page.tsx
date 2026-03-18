@@ -64,14 +64,22 @@ export default function Home() {
             className="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-4"
             style={{ backgroundColor: '#c9a84c20', color: '#c9a84c' }}
           >
-            2024 & 2025 Tax Years · Federal Estimate
+            2024 & 2025 Tax Years · IRS Form 1040 Flow
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold mb-3" style={{ color: '#0a1628' }}>
-            Find out where your money is really going
+            Your tax return, finally making sense
           </h1>
-          <p className="text-lg" style={{ color: '#0a162880' }}>
-            Answer a few questions and get a clear picture of your federal tax estimate — plus personalized opportunities you might be missing.
+          <p className="text-lg mb-4" style={{ color: '#0a162880' }}>
+            Plug in your numbers from your 1040 — box by box — and see exactly where your money went, how much you owe or get back, and what you could do differently.
           </p>
+          <div className="flex flex-wrap gap-4">
+            {['Takes 3 minutes', 'Uses real IRS brackets', 'Shows your deduction gap'].map(item => (
+              <div key={item} className="flex items-center gap-1.5">
+                <span style={{ color: '#c9a84c' }}>✓</span>
+                <span className="text-sm font-medium" style={{ color: '#0a1628' }}>{item}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         <WorksheetForm onComplete={handleComplete} />
@@ -84,9 +92,10 @@ export default function Home() {
           style={{ backgroundColor: '#0a162880' }}
         >
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-            <h3 className="text-lg font-bold mb-1" style={{ color: '#0a1628' }}>Save your results</h3>
+            <div className="text-2xl mb-2">🎉</div>
+            <h3 className="text-lg font-bold mb-1" style={{ color: '#0a1628' }}>You did it — great work!</h3>
             <p className="text-sm mb-4" style={{ color: '#0a162870' }}>
-              Enter your info to get a copy of your results and receive tips from the Arqon Tax team.
+              Your results are ready. Drop your email so we can send you a copy and keep you in the loop on strategies that could improve your outcome.
             </p>
             <form onSubmit={handleLeadSubmit} className="space-y-3">
               <input

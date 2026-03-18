@@ -3,6 +3,15 @@ import { getStripe } from '@/lib/stripe'
 
 export async function POST(req: NextRequest) {
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY is not set')
+      return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
+    }
+    if (!process.env.NEXT_PUBLIC_STRIPE_PRICE_ID) {
+      console.error('NEXT_PUBLIC_STRIPE_PRICE_ID is not set')
+      return NextResponse.json({ error: 'Price not configured' }, { status: 500 })
+    }
+
     const { email } = await req.json()
     const stripe = getStripe()
 
@@ -12,7 +21,7 @@ export async function POST(req: NextRequest) {
       customer_email: email || undefined,
       line_items: [
         {
-          price: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID!,
+          price: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID,
           quantity: 1,
         },
       ],
@@ -23,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (err) {
-    console.error('Stripe error:', err)
-    return NextResponse.json({ error: 'Failed to create checkout' }, { status: 500 })
+    console.error('Stripe checkout error:', err)
+    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })
   }
 }
