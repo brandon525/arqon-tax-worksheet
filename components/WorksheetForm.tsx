@@ -454,11 +454,13 @@ function BackBtn({ onClick }: { onClick: () => void }) {
 
 function Results({ result, input, onReset }: { result: TaxResult; input: TaxInput; onReset: () => void }) {
   const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [checkoutError, setCheckoutError] = useState('')
   const [email, setEmail] = useState('')
   const [showUpgrade, setShowUpgrade] = useState(false)
 
   async function handleUpgrade() {
     setCheckoutLoading(true)
+    setCheckoutError('')
     try {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
@@ -466,9 +468,13 @@ function Results({ result, input, onReset }: { result: TaxResult; input: TaxInpu
         body: JSON.stringify({ email }),
       })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setCheckoutError(data.error || 'Could not start checkout. Please try again.')
+      }
     } catch {
-      alert('Something went wrong. Please try again.')
+      setCheckoutError('Network error. Please check your connection and try again.')
     } finally {
       setCheckoutLoading(false)
     }
@@ -597,6 +603,9 @@ function Results({ result, input, onReset }: { result: TaxResult; input: TaxInpu
           >
             {checkoutLoading ? 'Redirecting…' : 'Unlock for $2.99/year'}
           </button>
+          {checkoutError && (
+            <p className="text-red-600 text-xs mt-2">{checkoutError}</p>
+          )}
         </div>
       )}
 
