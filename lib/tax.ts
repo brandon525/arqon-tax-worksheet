@@ -72,10 +72,11 @@ const BRACKETS: Record<TaxYear, { single: Bracket[]; mfj: Bracket[]; hoh: Bracke
   },
 }
 
-// IRS published standard deductions
-// Source: Rev. Proc. 2024-61 (2025), Rev. Proc. 2023-34 (2024)
+// Standard deductions
+// 2025 source: IRS Publication 501, Table 1 (under 65)
+// 2024 source: Rev. Proc. 2023-34
 export const STANDARD_DEDUCTION: Record<TaxYear, { single: number; mfj: number; hoh: number }> = {
-  2025: { single: 15000, mfj: 30000, hoh: 22500 },
+  2025: { single: 15750, mfj: 31500, hoh: 23625 },
   2024: { single: 14600, mfj: 29200, hoh: 21900 },
 }
 
