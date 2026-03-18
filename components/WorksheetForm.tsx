@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { calculateTax, type TaxInput, type TaxResult, type FilingStatus } from '@/lib/tax'
+import { calculateTax, type TaxInput, type TaxResult, type FilingStatus, TAX_YEARS } from '@/lib/tax'
 
 const defaultInput: TaxInput = {
+  taxYear: 2025,
   filingStatus: 'single',
   grossIncome: 0,
   otherIncome: 0,
@@ -36,10 +37,10 @@ export default function WorksheetForm({ onComplete }: Props) {
   const [input, setInput] = useState<TaxInput>(defaultInput)
   const [result, setResult] = useState<TaxResult | null>(null)
 
-  function set(field: keyof TaxInput, value: string | FilingStatus) {
+  function set(field: keyof TaxInput, value: string | number) {
     setInput(prev => ({
       ...prev,
-      [field]: field === 'filingStatus' ? value : Number(value) || 0,
+      [field]: field === 'filingStatus' ? value : field === 'taxYear' ? Number(value) : Number(value) || 0,
     }))
   }
 
@@ -70,6 +71,23 @@ export default function WorksheetForm({ onComplete }: Props) {
       {/* Step 0: Filing Status */}
       {step === 0 && (
         <div>
+          {/* Tax Year Selector */}
+          <div className="flex items-center gap-3 mb-6">
+            <span className="text-sm font-medium text-[#0a1628]">Tax Year:</span>
+            <div className="flex gap-2">
+              {TAX_YEARS.map(year => (
+                <button
+                  key={year}
+                  onClick={() => set('taxYear', year)}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-semibold border-2 transition-all ${input.taxYear === year ? 'border-[#c9a84c] bg-[#c9a84c] text-[#0a1628]' : 'border-[#0a1628]/20 text-[#0a1628]/60 hover:border-[#c9a84c]/50'}`}
+                >
+                  {year}
+                </button>
+              ))}
+            </div>
+            <span className="text-xs text-[#0a1628]/40">IRS {input.taxYear} brackets</span>
+          </div>
+
           <h2 className="text-2xl font-bold text-[#0a1628] mb-2">How do you file?</h2>
           <p className="text-[#0a1628]/60 mb-6">This determines your tax brackets and standard deduction.</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
@@ -83,7 +101,11 @@ export default function WorksheetForm({ onComplete }: Props) {
                   {s === 'single' ? 'Single' : s === 'mfj' ? 'Married Filing Jointly' : 'Head of Household'}
                 </div>
                 <div className="text-xs text-[#0a1628]/50 mt-1">
-                  {s === 'single' ? 'Standard deduction: $14,600' : s === 'mfj' ? 'Standard deduction: $29,200' : 'Standard deduction: $21,900'}
+                  {s === 'single'
+                    ? `Std deduction: ${input.taxYear === 2025 ? '$15,000' : '$14,600'}`
+                    : s === 'mfj'
+                    ? `Std deduction: ${input.taxYear === 2025 ? '$30,000' : '$29,200'}`
+                    : `Std deduction: ${input.taxYear === 2025 ? '$22,500' : '$21,900'}`}
                 </div>
               </button>
             ))}
@@ -216,8 +238,8 @@ function Results({ result, input, onReset }: { result: TaxResult; input: TaxInpu
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-[#0a1628] mb-1">Your 2024 Tax Estimate</h2>
-      <p className="text-[#0a1628]/60 mb-6 text-sm">Based on {input.filingStatus === 'mfj' ? 'Married Filing Jointly' : input.filingStatus === 'hoh' ? 'Head of Household' : 'Single'} filing status.</p>
+      <h2 className="text-2xl font-bold text-[#0a1628] mb-1">Your {result.taxYear} Tax Estimate</h2>
+      <p className="text-[#0a1628]/60 mb-6 text-sm">Based on {input.filingStatus === 'mfj' ? 'Married Filing Jointly' : input.filingStatus === 'hoh' ? 'Head of Household' : 'Single'} filing status · IRS {result.taxYear} brackets.</p>
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">

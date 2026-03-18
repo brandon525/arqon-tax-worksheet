@@ -64,7 +64,7 @@ export default function Home() {
             className="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-4"
             style={{ backgroundColor: '#c9a84c20', color: '#c9a84c' }}
           >
-            2024 Tax Year · Federal Estimate
+            2024 & 2025 Tax Years · Federal Estimate
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold mb-3" style={{ color: '#0a1628' }}>
             Find out where your money is really going
